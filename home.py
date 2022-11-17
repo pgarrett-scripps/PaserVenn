@@ -5,8 +5,14 @@ from matplotlib_venn import venn2
 from matplotlib_venn import venn3
 from matplotlib import pyplot as plt
 
-st.header('PaSER Venn')
-st.markdown('Upload 2-3 DTASelect-filter.txt files. Must have a unique name!')
+st.header('PaSER Venn Diagram Creator')
+
+st.text("""
+This Streamlit app generates venn diagrams to visualize shared peptide/protein IDs from PaSER Experiments.
+""")
+
+with st.expander('Help'):
+    st.markdown('Upload 2-3 DTASelect-filter.txt files. Must have a unique name!')
 
 files = st.file_uploader(label='DTASelect-filter.txt files', accept_multiple_files=True)
 
