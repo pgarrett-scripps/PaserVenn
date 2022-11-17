@@ -1,6 +1,5 @@
 import streamlit as st
 from serenipy.dtaselectfilter import from_dta_select_filter
-from dataclasses import asdict
 
 from matplotlib_venn import venn2
 from matplotlib_venn import venn3
@@ -31,8 +30,8 @@ if st.button('Run'):
 
     shared_protein = set.intersection(*[data[file_name]['protein'] for file_name in data])
     shared_peptide = set.intersection(*[data[file_name]['peptide'] for file_name in data])
-    unique_protein = set.difference(*[data[file_name]['protein'] for file_name in data])
-    unique_peptide = set.difference(*[data[file_name]['peptide'] for file_name in data])
+    unique_protein = set.union(*[data[file_name]['protein'] for file_name in data]) - set.intersection(*[data[file_name]['protein'] for file_name in data])
+    unique_peptide = set.union(*[data[file_name]['peptide'] for file_name in data]) - set.intersection(*[data[file_name]['peptide'] for file_name in data])
 
     figure, axes = plt.subplots(2, 2)
     figure.tight_layout()
