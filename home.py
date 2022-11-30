@@ -5,7 +5,7 @@ from matplotlib_venn import venn2
 from matplotlib_venn import venn3
 from matplotlib import pyplot as plt
 
-st.header('PaSER Venn Diagram Creator')
+st.header('PaserVenn')
 
 st.text("""
 This Streamlit app generates venn diagrams to visualize shared peptide/protein IDs from PaSER Experiments.
@@ -16,15 +16,14 @@ with st.expander('Help'):
 
 files = st.file_uploader(label='DTASelect-filter.txt files', accept_multiple_files=True)
 
-
 with st.expander('Custom Order'):
     labels = []
     order = []
     for i, file in enumerate(files):
         st.caption(file.name)
         c1, c2 = st.columns(2)
-        num = c1.number_input(label='Order', value=i+1, key=f'num{file.name}')
-        lab = c2.text_input(label='Label', value=chr(65+num-1), key=f'lab{file.name}')
+        num = c1.number_input(label='Order', value=i + 1, key=f'num{file.name}')
+        lab = c2.text_input(label='Label', value=chr(65 + num - 1), key=f'lab{file.name}')
 
         order.append(num)
         labels.append(lab)
@@ -34,6 +33,7 @@ if st.button('Run'):
     if len(set(order)) != len(files):
         st.warning('Order must be unique!')
         st.stop()
+
     if len(set(labels)) != len(files):
         st.warning('Labels must be unique!')
         st.stop()
@@ -44,7 +44,7 @@ if st.button('Run'):
         st.warning('Incorrect number of files: {len(files}. Please use only 2 or 3 files!')
         st.stop()
 
-    data = {file.name: {'protein': set(), 'peptide': set(), 'coverage':[], 'peptide_intensity':[]} for file in files}
+    data = {file.name: {'protein': set(), 'peptide': set(), 'coverage': [], 'peptide_intensity': []} for file in files}
     for file in files:
         version, head_lines, dta_select_filter_results, tail_lines = from_dta_select_filter(file.read().decode('utf-8'))
 
@@ -58,8 +58,10 @@ if st.button('Run'):
 
     shared_protein = set.intersection(*[data[file_name]['protein'] for file_name in data])
     shared_peptide = set.intersection(*[data[file_name]['peptide'] for file_name in data])
-    unique_protein = set.union(*[data[file_name]['protein'] for file_name in data]) - set.intersection(*[data[file_name]['protein'] for file_name in data])
-    unique_peptide = set.union(*[data[file_name]['peptide'] for file_name in data]) - set.intersection(*[data[file_name]['peptide'] for file_name in data])
+    unique_protein = set.union(*[data[file_name]['protein'] for file_name in data]) - set.intersection(
+        *[data[file_name]['protein'] for file_name in data])
+    unique_peptide = set.union(*[data[file_name]['peptide'] for file_name in data]) - set.intersection(
+        *[data[file_name]['peptide'] for file_name in data])
 
     figure, axes = plt.subplots(2, 2)
     figure.tight_layout()
@@ -129,21 +131,21 @@ if st.button('Run'):
     st.subheader('Average Sequence Coverage')
     cols = st.columns(len(files))
     for i, file in enumerate(files):
-        cols[i].metric(label=labels[i], value=str(round(sum(data[file.name]['coverage'])/
-                                                        len(data[file.name]['coverage']),2)) + "%")
+        cols[i].metric(label=labels[i], value=str(round(sum(data[file.name]['coverage']) /
+                                                        len(data[file.name]['coverage']), 2)) + "%")
 
     st.markdown('---')
     st.subheader('Average Peptide Intensity')
     cols = st.columns(len(files))
     for i, file in enumerate(files):
-        cols[i].metric(label=labels[i], value=round(sum(data[file.name]['peptide_intensity'])/
-                                                        len(data[file.name]['peptide_intensity']),1))
+        cols[i].metric(label=labels[i], value=round(sum(data[file.name]['peptide_intensity']) /
+                                                    len(data[file.name]['peptide_intensity']), 1))
 
-    #figure = plt.figure()
-    #plt.violinplot([data[file_name]['peptide_intensity'] for file_name in data])
-    #plt.xticks(list(range(len(labels)+1)), [''] + labels)
-    #plt.yscale('log')
-    #st.pyplot(fig=figure, clear_figure=None)
+    # figure = plt.figure()
+    # plt.violinplot([data[file_name]['peptide_intensity'] for file_name in data])
+    # plt.xticks(list(range(len(labels)+1)), [''] + labels)
+    # plt.yscale('log')
+    # st.pyplot(fig=figure, clear_figure=None)
 
     st.markdown('---')
     st.subheader('Stats')
@@ -152,9 +154,3 @@ if st.button('Run'):
     c2.metric(label='Unique proteins', value=len(unique_protein))
     c3.metric(label='Shared peptides', value=len(shared_peptide))
     c4.metric(label='Unique peptides', value=len(unique_peptide))
-
-
-
-
-
-
