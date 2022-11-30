@@ -16,7 +16,29 @@ with st.expander('Help'):
 
 files = st.file_uploader(label='DTASelect-filter.txt files', accept_multiple_files=True)
 
+
+with st.expander('Custom Order'):
+    labels = []
+    order = []
+    for i, file in enumerate(files):
+        st.caption(file.name)
+        c1, c2 = st.columns(2)
+        num = c1.number_input(label='Order', value=i+1, key=f'num{file.name}')
+        lab = c2.text_input(label='Label', value=chr(65+num-1), key=f'lab{file.name}')
+
+        order.append(num)
+        labels.append(lab)
+
 if st.button('Run'):
+
+    if len(set(order)) != len(files):
+        st.warning('Order must be unique!')
+        st.stop()
+    if len(set(labels)) != len(files):
+        st.warning('Labels must be unique!')
+        st.stop()
+
+    order, labels, files = zip(*sorted(zip(order, labels, files)))
 
     if len(files) != 2 and len(files) != 3:
         st.warning('Incorrect number of files: {len(files}. Please use only 2 or 3 files!')
@@ -42,9 +64,8 @@ if st.button('Run'):
     figure, axes = plt.subplots(2, 2)
     figure.tight_layout()
 
-    labels, protein_counts, peptide_counts = None, None, None
+    protein_counts, peptide_counts = None, None
     if len(data) == 2:
-        labels = ['A', 'B']
         protein_sets = [data[list(data.keys())[0]]['protein'],
                         data[list(data.keys())[1]]['protein']]
         peptide_sets = [data[list(data.keys())[0]]['peptide'],
@@ -56,7 +77,6 @@ if st.button('Run'):
         v_peptide = venn2(peptide_sets, labels, ax=axes[1][0])
 
     elif len(data) == 3:
-        labels = ['A', 'B', 'C']
         protein_sets = [data[list(data.keys())[0]]['protein'],
                         data[list(data.keys())[1]]['protein'],
                         data[list(data.keys())[2]]['protein']]
