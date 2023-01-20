@@ -1,3 +1,6 @@
+import re
+from io import StringIO
+
 import streamlit as st
 from serenipy.dtaselectfilter import from_dta_select_filter
 
@@ -12,9 +15,26 @@ This Streamlit app generates venn diagrams to visualize shared peptide/protein I
 """)
 
 with st.expander('Help'):
-    st.markdown('Upload 2-3 DTASelect-filter.txt files. Must have a unique name!')
+    st.markdown('''Upload 2-3 DTASelect-filter.txt files. Must have a unique name!
+    
+    Protein Counts - number of unique protein locus's
+    
+    Peptide Counts - number of unique peptide sequences
+    ''')
 
-files = st.file_uploader(label='DTASelect-filter.txt files', accept_multiple_files=True)
+
+files = st.file_uploader(label='DTASelect-filter.txt files', accept_multiple_files=True, type='.txt')
+use_charge = st.checkbox(label='Consider charge', help='If False: (PEPTIDE +2 & PEPTIDE +3) == 1 unique peptides, '
+                                                          'If True:  (PEPTIDE +2 & PEPTIDE +3) == 2 unique peptides')
+use_modifications = st.checkbox(label='Consider modifications', help='If False: (PEPTI(XXX)DE +2 & PEPTIDE +3) == 1 unique peptides, '
+                                                                  'If True:  (PEPTI(XXX)DE +2 & PEPTIDE +3) == 2 unique peptides')
+use_groups = st.checkbox(label='Consider protein groups', help='If False: all proteins in a group will be counted independently, '
+                                                                  'If True: will count only the totla number of protein groups')
+
+def get_unmodified_peptide(peptide_sequence: str) -> str:
+    pattern = re.compile(r'[^A-Z]')
+    return pattern.sub('', peptide_sequence)
+
 
 with st.expander('Custom Order'):
     labels = []
@@ -46,14 +66,27 @@ if st.button('Run'):
 
     data = {file.name: {'protein': set(), 'peptide': set(), 'coverage': [], 'peptide_intensity': []} for file in files}
     for file in files:
-        version, head_lines, dta_select_filter_results, tail_lines = from_dta_select_filter(file.read().decode('utf-8'))
+        version, head_lines, dta_select_filter_results, tail_lines = from_dta_select_filter(StringIO(file.getvalue().decode("utf-8")))
 
         for res in dta_select_filter_results:
             for protein_line in res.protein_lines:
                 data[file.name]['protein'].add(protein_line.locus_name)
                 data[file.name]['coverage'].append(protein_line.sequence_coverage)
+
+                if use_groups:
+                    break
+
             for peptide_line in res.peptide_lines:
-                data[file.name]['peptide'].add(peptide_line.sequence[2:-2])
+
+                sequence = peptide_line.sequence[2:-2]
+                if not use_modifications:
+                    sequence = get_unmodified_peptide(sequence)
+
+                if use_charge:
+                    data[file.name]['peptide'].add((sequence, peptide_line.charge))
+                else:
+                    data[file.name]['peptide'].add(sequence)
+
                 data[file.name]['peptide_intensity'].append(peptide_line.total_intensity)
 
     shared_protein = set.intersection(*[data[file_name]['protein'] for file_name in data])
