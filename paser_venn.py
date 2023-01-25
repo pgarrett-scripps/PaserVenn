@@ -8,14 +8,14 @@ from matplotlib_venn import venn2
 from matplotlib_venn import venn3
 from matplotlib import pyplot as plt
 
-st.header('PaserVenn')
+st.header('PaSER Venn! :bar_chart:')
 
 st.text("""
-This Streamlit app generates venn diagrams to visualize shared peptide/protein IDs from PaSER Experiments.
+Generates venn diagrams to visualize peptide & protein overlaps between experiemnts.
 """)
 
 with st.expander('Help'):
-    st.markdown('''Upload 2-3 DTASelect-filter.txt files. Must have a unique name!
+    st.markdown('''Upload 2-3 DTASelect-filter.txt files.
 
     Protein Counts - number of unique protein locus's
 

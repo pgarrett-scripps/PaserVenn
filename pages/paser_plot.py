@@ -5,6 +5,22 @@ import streamlit as st
 from serenipy.dtaselectfilter import from_dta_select_filter
 import plotly.express as px
 
+st.header('PaSER Plot! :bar_chart:')
+
+st.text("""
+Generates plots to visualize peptide & protein IDs in sequential experiments.
+""")
+
+with st.expander('Help'):
+    st.markdown('''Upload DTASelect-filter.txt files. Click Run.
+
+    Unique peptides vs duplicate peptides (per experiment) - compares the number of unique (peptide, charge) pairs to duplicate (peptide, charge) pairs
+
+    New peptides vs seen peptides (per previous experiments) - compares the number of new unique peptides found in sequential experiments. 
+    
+    New proteins vs seen proteins (per previous experiments) - ompares the number of new unique proteins found in sequential experiments. 
+    ''')
+
 files = st.file_uploader(label='DTASelect-filter.txt files', accept_multiple_files=True, type='.txt')
 
 with st.expander('Custom Order'):
