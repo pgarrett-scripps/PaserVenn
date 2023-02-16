@@ -30,7 +30,7 @@ use_modifications = st.checkbox(label='Consider modifications',
                                      'If True:  (PEPTI(XXX)DE +2 & PEPTIDE +3) == 2 unique peptides')
 use_groups = st.checkbox(label='Consider protein groups',
                          help='If False: all proteins in a group will be counted independently, '
-                              'If True: will count only the totla number of protein groups')
+                              'If True: will count only the totla number of protein groups', disabled=True)
 
 
 def get_unmodified_peptide(peptide_sequence: str) -> str:
@@ -39,8 +39,7 @@ def get_unmodified_peptide(peptide_sequence: str) -> str:
 
 
 with st.expander('Custom Order'):
-    labels = []
-    order = []
+    names = []
     for i, file in enumerate(files):
         name = file.name.split('.txt')[0]
         if len(file.name.split('_DTASelect-filter.txt')) > 1:
@@ -48,17 +47,28 @@ with st.expander('Custom Order'):
         elif len(file.name.split('DTASelect-filter.txt')) > 1:
             name = file.name.split('DTASelect-filter.txt')[0]
 
+        names.append(name)
+
+    if all([name.isalnum() for name in names]):
+        pass
+
+    labels = []
+    orders = []
+    for i, (file, name) in enumerate(zip(files, names)):
         st.caption(file.name)
         c1, c2 = st.columns(2)
-        num = c1.number_input(label='Order', value=i + 1, key=f'num{file.name}')
+        if name.isalnum():
+            num = c1.number_input(label='Order', value=int(name), key=f'num{file.name}')
+        else:
+            num = c1.number_input(label='Order', value=i + 1, key=f'num{file.name}')
         lab = c2.text_input(label='Label', value=name, key=f'lab{file.name}')
 
-        order.append(num)
+        orders.append(num)
         labels.append(lab)
 
 if st.button('Run'):
 
-    if len(set(order)) != len(files):
+    if len(set(orders)) != len(files):
         st.warning('Order must be unique!')
         st.stop()
 
@@ -66,7 +76,7 @@ if st.button('Run'):
         st.warning('Labels must be unique!')
         st.stop()
 
-    order, labels, files = zip(*sorted(zip(order, labels, files)))
+    order, labels, files = zip(*sorted(zip(orders, labels, files)))
 
     if len(files) != 2 and len(files) != 3:
         st.warning('Incorrect number of files: {len(files}. Please use only 2 or 3 files!')
@@ -192,7 +202,7 @@ if st.button('Run'):
     st.markdown('---')
     st.subheader('Stats')
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric(label='Shared proteins', value=len(shared_protein))
-    c2.metric(label='Unique proteins', value=len(unique_protein))
-    c3.metric(label='Shared peptides', value=len(shared_peptide))
-    c4.metric(label='Unique peptides', value=len(unique_peptide))
+    c1.metric(label='Protein intersection', value=len(shared_protein))
+    c2.metric(label='Proteins symmetric difference', value=len(unique_protein))
+    c3.metric(label='Peptide intersection', value=len(shared_peptide))
+    c4.metric(label='Unique symmetric difference', value=len(unique_peptide))
