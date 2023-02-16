@@ -1,8 +1,9 @@
 **PaSER Venn**
 
-PaSER Venn is a Streamlit application for comparing peptide and protein results between multiple experiments.
-The application contains two pages, PaSER Venn and PaSER plot, which allow you to visualize which peptides and proteins
-are shared between experiments.
+PaSER Venn is a Streamlit application for comparing peptide and protein results between multiple IP2 or PaSER experiments.
+The application contains two pages, PaSER Venn and PaSER plot. PaSER Venn generates venn diagrams to visualize
+peptide and protein overlap, between 2 or 3 experiments. PaSER Plot generates bar plots to visualize
+how peptide and protein IDs change over subsequent experiments.
 
 **Try it out**
 
