@@ -14,7 +14,7 @@ for each experiment, which will contain only peptides that were uniquely identif
 group options are used for set logic, and all charge/modifications will be included in the results files.""")
 
 files = st.file_uploader(label='DTASelect-filter.txt files', accept_multiple_files=True, type='.txt')
-use_charge, use_modifications, use_groups = util.peptide_config(disable_group=True)
+use_charge, use_modifications, use_groups = util.peptide_config()
 group_by_peptide = st.checkbox(label='Group by peptide', value=True)
 
 with st.expander('Custom Order'):
@@ -72,7 +72,8 @@ if st.button('Run'):
         results.sort(key=lambda x: x.protein_lines[0].sequence_coverage, reverse=True)
         filter_content = to_dta_select_filter(version=versions[i], h_lines=headers[i],
                                               dta_filter_results=results, end_lines=tailers[i])
-        st.dataframe(df_diff)
+        with st.expander(f'{labels[i]} dataframe'):
+            st.dataframe(df_diff)
         st.markdown(util.create_download_link(filter_content.encode('UTF-8'), f'{labels[i]}_diff.txt'),
                     unsafe_allow_html=True)
         st.markdown(util.create_download_link(df_diff.to_csv(index=False).encode('UTF-8'), f'{labels[i]}_diff.csv'),
@@ -91,7 +92,8 @@ if st.button('Run'):
         results.sort(key=lambda x: x.protein_lines[0].sequence_coverage, reverse=True)
         filter_content = to_dta_select_filter(version=versions[i], h_lines=headers[i],
                                               dta_filter_results=results, end_lines=tailers[i])
-        st.dataframe(df_diff)
+        with st.expander(f'{labels[i]} dataframe'):
+            st.dataframe(df_diff)
         st.markdown(util.create_download_link(filter_content.encode('UTF-8'), f'{labels[i]}_inter.txt'),
                     unsafe_allow_html=True)
         st.markdown(util.create_download_link(df_diff.to_csv(index=False).encode('UTF-8'), f'{labels[i]}_inter.csv'),

@@ -64,88 +64,148 @@ if st.button('Run'):
 
         data = {'name': labels[i],
                 'order': str(i),
-                'unique_peptides': len(peptide_set),
-                'total_peptides': len(peptides),
-                'duplicate_peptides': len(peptides) - len(peptide_set),
-                'new_unique_peptides': len(peptide_set - global_peptides),
-                'new_peptides': sum([p not in global_peptides for p in peptides]),
-                'seen_unique_peptides': len(global_peptides.intersection(peptide_set)),
-                'seen_peptides': sum([p in global_peptides for p in peptides]),
-                'unique_proteins': len(protein_set),
-                'duplicate_proteins': len(proteins) - len(protein_set),
-                'total_proteins': len(proteins),
-                'new_proteins': sum([p not in global_proteins for p in proteins]),
-                'new_unique_proteins': len(protein_set - global_proteins),
-                'seen_proteins': sum([p in global_proteins for p in proteins]),
-                'seen_unique_proteins': len(global_proteins.intersection(protein_set))}
+                'Unique Peptides': len(peptide_set),
+                'Total Peptides': len(peptides),
+                'Duplicate Peptides': len(peptides) - len(peptide_set),
+                'New Unique Peptides': len(peptide_set - global_peptides),
+                'New Peptides': sum([p not in global_peptides for p in peptides]),
+                'Unique New Peptides': sum([p not in global_peptides for p in peptide_set]),
+                'Seen Unique Peptides': len(global_peptides.intersection(peptide_set)),
+                'Seen Peptides': sum([p in global_peptides for p in peptides]),
+                'Unique Seen Peptides': sum([p in global_peptides for p in peptide_set]),
+                'Unique Proteins': len(protein_set),
+                'Duplicate Proteins': len(proteins) - len(protein_set),
+                'Total Proteins': len(proteins),
+                'New Proteins': sum([p not in global_proteins for p in protein_set]),
+                'New Unique Proteins': len(protein_set - global_proteins),
+                'Seen Proteins': sum([p in global_proteins for p in protein_set]),
+                'Seen Unique Proteins': len(global_proteins.intersection(protein_set))}
 
-        data['unique_peptides_perc'] = round(data['unique_peptides'] / data['total_peptides'], 4) * 100
-        data['duplicate_peptides_perc'] = round(data['duplicate_peptides'] / data['total_peptides'], 4) * 100
-        data['new_peptides_perc'] = round(data['new_peptides'] / data['total_peptides'], 4) * 100
-        data['seen_peptides_perc'] = round(data['seen_peptides'] / data['total_peptides'], 4) * 100
-        data['new_proteins_perc'] = round(data['new_proteins'] / data['total_proteins'], 4) * 100
-        data['seen_proteins_perc'] = round(data['seen_proteins'] / data['total_proteins'], 4) * 100
+        data['Unique Peptides Percent'] = round(data['Unique Peptides'] / data['Total Peptides'], 4) * 100
+        data['Duplicate Peptides Percent'] = round(data['Duplicate Peptides'] / data['Total Peptides'], 4) * 100
+        data['New Peptides Percent'] = round(data['New Peptides'] / data['Total Peptides'], 4) * 100
+        data['Seen Peptides Percent'] = round(data['Seen Peptides'] / data['Total Peptides'], 4) * 100
+        data['New Unique Peptides Percent'] = round(data['New Unique Peptides'] / data['Unique Peptides'], 4) * 100
+        data['Seen Unique Peptides Percent'] = round(data['Seen Unique Peptides'] / data['Unique Peptides'], 4) * 100
+        data['New Proteins Percent'] = round(data['New Proteins'] / data['Total Proteins'], 4) * 100
+        data['Seen Proteins Percent'] = round(data['Seen Proteins'] / data['Total Proteins'], 4) * 100
         global_proteins.update(protein_set)
         global_peptides.update(peptide_set)
 
-        data['global_proteins'] = len(global_proteins)
-        data['global_peptides'] = len(global_peptides)
+        data['Protein Counts'] = len(global_proteins)
+        data['Peptide Counts'] = len(global_peptides)
 
         datas.append(data)
 
     df = pd.DataFrame(datas)
     st.dataframe(df)
+    st.markdown(util.create_download_link(df.to_csv(index=False).encode('UTF-8'), f'paser_plot_results_{"_".join(labels)}.csv'),
+                unsafe_allow_html=True)
 
-    fig = px.bar(df, x="order", y=['unique_peptides', 'duplicate_peptides'], barmode="stack", text_auto=True,
-                 title='Unique peptides vs duplicate peptides # (per experiment)')
+    fig = px.bar(df, x="order", y=['Unique Peptides', 'Duplicate Peptides'], barmode="group", text_auto=True,
+                 title='Number of unique peptides vs duplicate peptides in each experiment',
+                 labels={
+                     "unique_peptides": "Unique Peptide Count",
+                     "duplicate_peptides": "Duplicate Peptide Count",
+                     "order": "Experiment"
+                 },
+                 )
     fig.update_xaxes(tickangle=90,
                      tickmode='array',
                      tickvals=df['order'],
                      ticktext=df['name'])
     st.plotly_chart(fig)
 
-    fig = px.bar(df, x="order", y=['unique_peptides_perc', 'duplicate_peptides_perc'], barmode="stack", text_auto=True,
-                 title='Unique peptides vs duplicate peptides % (per experiment)')
+    fig = px.bar(df, x="order", y=['Unique Peptides Percent', 'Duplicate Peptides Percent'], barmode="stack", text_auto=True,
+                 title='Percent of unique peptides vs duplicate peptides in each experiment',
+                 labels={
+                     "order": "Experiment"
+                 },
+                 )
     fig.update_xaxes(tickangle=90,
                      tickmode='array',
                      tickvals=df['order'],
                      ticktext=df['name'])
     st.plotly_chart(fig)
 
-    fig = px.bar(df, x="order", y=['new_peptides', 'seen_peptides'], barmode="stack", text_auto=True,
-                 title='New peptides vs seen peptides # (per previous experiments)')
+    fig = px.bar(df, x="order", y=['New Peptides', 'Seen Peptides'], barmode="group", text_auto=True,
+                 title='Number of new peptides vs seen previously seen peptides',
+                 labels={
+                     "order": "Experiment"
+                 },
+                 )
     fig.update_xaxes(tickangle=90,
                      tickmode='array',
                      tickvals=df['order'],
                      ticktext=df['name'])
     st.plotly_chart(fig)
 
-    fig = px.bar(df, x="order", y=['new_peptides_perc', 'seen_peptides_perc'], barmode="stack", text_auto=True,
-                 title='New peptides vs seen peptides % (per previous experiments)')
+    fig = px.bar(df, x="order", y=['New Peptides Percent', 'Seen Peptides Percent'], barmode="stack", text_auto=True,
+                 title='Percent of new peptides vs previously seen peptides',
+                 labels={
+                     "order": "Experiment"
+                 },
+                 )
     fig.update_xaxes(tickangle=90,
                      tickmode='array',
                      tickvals=df['order'],
                      ticktext=df['name'])
     st.plotly_chart(fig)
 
-    fig = px.bar(df, x="order", y=['new_proteins', 'seen_proteins'], barmode="stack", text_auto=True,
-                 title='New proteins vs seen proteins # (per previous experiments)')
+    fig = px.bar(df, x="order", y=['New Unique Peptides', 'Seen Unique Peptides'], barmode="group", text_auto=True,
+                 title='Number of new unique peptides vs seen previously seen unique peptides',
+                 labels={
+                     "order": "Experiment"
+                 },
+                 )
     fig.update_xaxes(tickangle=90,
                      tickmode='array',
                      tickvals=df['order'],
                      ticktext=df['name'])
     st.plotly_chart(fig)
 
-    fig = px.bar(df, x="order", y=['new_proteins_perc', 'seen_proteins_perc'], barmode="stack", text_auto=True,
-                 title='New proteins vs seen proteins % (per previous experiments)')
+    fig = px.bar(df, x="order", y=['New Unique Peptides Percent', 'Seen Unique Peptides Percent'], barmode="stack", text_auto=True,
+                 title='Percent of new unique peptides vs previously seen unique peptides',
+                 labels={
+                     "order": "Experiment"
+                 },
+                 )
     fig.update_xaxes(tickangle=90,
                      tickmode='array',
                      tickvals=df['order'],
                      ticktext=df['name'])
     st.plotly_chart(fig)
 
-    fig = px.bar(df, x="order", y=['global_proteins', 'global_peptides'], barmode="group", text_auto=True,
-                 title='Global peptides and proteins (per previous experiments)')
+    fig = px.bar(df, x="order", y=['New Proteins', 'Seen Proteins'], barmode="group", text_auto=True,
+                 title='Number of new proteins vs previously seen proteins',
+                 labels={
+                     "order": "Experiment"
+                 },
+                 )
+    fig.update_xaxes(tickangle=90,
+                     tickmode='array',
+                     tickvals=df['order'],
+                     ticktext=df['name'])
+    st.plotly_chart(fig)
+
+    fig = px.bar(df, x="order", y=['New Proteins Percent', 'Seen Proteins Percent'], barmode="stack", text_auto=True,
+                 title='Percent of new proteins vs previously seen proteins',
+                 labels={
+                     "order": "Experiment"
+                 },
+                 )
+    fig.update_xaxes(tickangle=90,
+                     tickmode='array',
+                     tickvals=df['order'],
+                     ticktext=df['name'])
+    st.plotly_chart(fig)
+
+    fig = px.bar(df, x="order", y=['Protein Counts', 'Peptide Counts'], barmode="group", text_auto=True,
+                 title='Total number of peptides and proteins encountered in previous experiments',
+                 labels={
+                     "order": "Experiment"
+                 },
+                 )
     fig.update_xaxes(tickangle=90,
                      tickmode='array',
                      tickvals=df['order'],

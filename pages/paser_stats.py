@@ -67,7 +67,12 @@ if st.button('Run'):
     df = pd.DataFrame(data)
 
     fig = px.bar(df, x="order", y='sequence_coverage', text_auto=True, error_y='sequence_coverage_sem',
-                 title='sequence_coverage')
+                 title='Average Protein Sequence Coverage',
+                 labels={
+                     "sequence_coverage": "Coverage %",
+                     "order": ""
+                 },
+                 )
     fig.update_xaxes(tickangle=90,
                      tickmode='array',
                      tickvals=df['order'],
@@ -75,7 +80,12 @@ if st.button('Run'):
     st.plotly_chart(fig)
 
     fig = px.bar(df, x="order", y='sequence_coverage_norm', text_auto=True,
-                 title='sequence_coverage_norm')
+                 title='Average Normalized Protein Sequence Coverage',
+                 labels={
+                     "sequence_coverage_norm": "Normalized Coverage",
+                     "order": ""
+                 },
+                 )
     fig.update_xaxes(tickangle=90,
                      tickmode='array',
                      tickvals=df['order'],
@@ -83,7 +93,12 @@ if st.button('Run'):
     st.plotly_chart(fig)
 
     fig = px.bar(df, x="order", y='spectrum_count', text_auto=True, error_y='spectrum_count_sem',
-                 title='spectrum_count')
+                 title='Average Protein Spectrum Count',
+                 labels={
+                     "spectrum_count": "Spectrum Count",
+                     "order": ""
+                 },
+                 )
     fig.update_xaxes(tickangle=90,
                      tickmode='array',
                      tickvals=df['order'],
@@ -91,7 +106,12 @@ if st.button('Run'):
     st.plotly_chart(fig)
 
     fig = px.bar(df, x="order", y='sequence_count', text_auto=True, error_y='sequence_count_sem',
-                 title='sequence_count')
+                 title='Average Protein Sequence Count',
+                 labels={
+                     "sequence_count": "Sequence Count",
+                     "order": ""
+                 },
+                 )
     fig.update_xaxes(tickangle=90,
                      tickmode='array',
                      tickvals=df['order'],
@@ -99,7 +119,12 @@ if st.button('Run'):
     st.plotly_chart(fig)
 
     fig = px.bar(df, x="order", y='nsaf', text_auto=True, error_y='nsaf_sem',
-                 title='nsaf')
+                 title='Average Protein NSAF',
+                 labels={
+                     "nsaf": "NSAF",
+                     "order": ""
+                 },
+                 )
     fig.update_xaxes(tickangle=90,
                      tickmode='array',
                      tickvals=df['order'],
@@ -107,7 +132,12 @@ if st.button('Run'):
     st.plotly_chart(fig)
 
     fig = px.bar(df, x="order", y='empai', text_auto=True, error_y='empai_sem',
-                 title='empai')
+                 title='Average Protein EMPAI',
+                 labels={
+                     "empai": "EMPAI",
+                     "order": ""
+                 },
+                 )
     fig.update_xaxes(tickangle=90,
                      tickmode='array',
                      tickvals=df['order'],
@@ -115,7 +145,12 @@ if st.button('Run'):
     st.plotly_chart(fig)
 
     fig = px.bar(df, x="order", y='x_corr', text_auto=True, error_y='x_corr_sem',
-                 title='x_corr')
+                 title='Average Peptide XCORR',
+                 labels={
+                     "x_corr": "XCORR",
+                     "order": ""
+                 },
+                 )
     fig.update_xaxes(tickangle=90,
                      tickmode='array',
                      tickvals=df['order'],
@@ -123,7 +158,12 @@ if st.button('Run'):
     st.plotly_chart(fig)
 
     fig = px.bar(df, x="order", y='delta_cn', text_auto=True, error_y='delta_cn_sem',
-                 title='delta_cn')
+                 title='Average peptide Delta CN',
+                 labels={
+                     "delta_cn": "Delta CN",
+                     "order": ""
+                 },
+                 )
     fig.update_xaxes(tickangle=90,
                      tickmode='array',
                      tickvals=df['order'],
@@ -131,7 +171,12 @@ if st.button('Run'):
     st.plotly_chart(fig)
 
     fig = px.bar(df, x="order", y='conf', text_auto=True, error_y='conf_sem',
-                 title='conf')
+                 title='Average Peptide Confidence',
+                 labels={
+                     "conf'": "Confidence",
+                     "order": ""
+                 },
+                 )
     fig.update_xaxes(tickangle=90,
                      tickmode='array',
                      tickvals=df['order'],

@@ -79,7 +79,6 @@ def get_peptides_and_protein_df(results):
     df['unmod_sequence'] = df['clean_sequence'].apply(lambda x: get_unmodified_peptide(x))
     return df
 
-
 def add_protein_groups(df, use_groups):
     seen = {}
     protein_keys = []

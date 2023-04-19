@@ -52,7 +52,7 @@ if st.button('Run'):
     util.add_peptide_groups(df, use_charge, use_modifications)
 
     with st.expander('Data'):
-        st.dataframe(df)
+        #st.dataframe(df)
         st.markdown(util.create_download_link(df.to_csv(index=False).encode('UTF-8'), f'combined.csv'),
                     unsafe_allow_html=True)
 
@@ -127,10 +127,8 @@ if st.button('Run'):
     for index, value in enumerate(peptide_counts):
         axes[1][1].text(value, index, str(value))
 
-    axes[0][0].title.set_text('Shared Proteins')
-    axes[1][0].title.set_text('Shared Peptides')
-    axes[0][1].title.set_text('Protein Counts')
-    axes[1][1].title.set_text('Peptide Counts')
+    axes[0][1].title.set_text('Proteins')
+    axes[1][1].title.set_text('Peptides')
     st.pyplot(fig=figure, clear_figure=None)
 
     st.markdown('---')
