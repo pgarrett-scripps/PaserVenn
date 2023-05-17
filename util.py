@@ -83,7 +83,7 @@ def add_protein_groups(df, use_groups):
     seen = {}
     protein_keys = []
     for grp in df['protein_group' if use_groups is True else 'locus_name']:
-        protein_keys.append(seen.setdefault(grp, len(protein_keys)))
+        protein_keys.append(seen.setdefault(grp, len(seen)))
     df['protein_key'] = protein_keys
 
 

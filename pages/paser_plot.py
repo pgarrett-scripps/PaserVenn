@@ -87,8 +87,8 @@ if st.button('Run'):
         data['Seen Peptides Percent'] = round(data['Seen Peptides'] / data['Total Peptides'], 4) * 100
         data['New Unique Peptides Percent'] = round(data['New Unique Peptides'] / data['Unique Peptides'], 4) * 100
         data['Seen Unique Peptides Percent'] = round(data['Seen Unique Peptides'] / data['Unique Peptides'], 4) * 100
-        data['New Proteins Percent'] = round(data['New Proteins'] / data['Total Proteins'], 4) * 100
-        data['Seen Proteins Percent'] = round(data['Seen Proteins'] / data['Total Proteins'], 4) * 100
+        data['New Proteins Percent'] = round(data['New Proteins'] / data['Unique Proteins'], 4) * 100
+        data['Seen Proteins Percent'] = round(data['Seen Proteins'] / data['Unique Proteins'], 4) * 100
         global_proteins.update(protein_set)
         global_peptides.update(peptide_set)
 
