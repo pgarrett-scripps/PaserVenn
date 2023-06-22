@@ -13,8 +13,9 @@ def create_download_link(val, filename):
 
 
 def peptide_config(disable_charge=False, disable_mod=False, disable_group=False) -> (bool, bool, bool):
-    use_charge = st.checkbox(label='Group by peptide charge', help='If False: (PEPTIDE +2 & PEPTIDE +3) == 1 unique peptides, '
-                                                           'If True:  (PEPTIDE +2 & PEPTIDE +3) == 2 unique peptides',
+    use_charge = st.checkbox(label='Group by peptide charge',
+                             help='If False: (PEPTIDE +2 & PEPTIDE +3) == 1 unique peptides, '
+                                  'If True:  (PEPTIDE +2 & PEPTIDE +3) == 2 unique peptides',
                              value=True,
                              disabled=disable_charge)
     use_modifications = st.checkbox(label='Group by peptide modification',
@@ -55,7 +56,8 @@ def get_file_order_and_labels(files):
     for i, (file, name) in enumerate(zip(files, names)):
         st.caption(file.name)
         c1, c2 = st.columns(2)
-        if name.isalnum():
+        # check if all chars in nam are digits
+        if name.isnumeric():
             num = c1.number_input(label='Order', value=int(name), key=f'num{file.name}')
         else:
             num = c1.number_input(label='Order', value=i + 1, key=f'num{file.name}')
@@ -78,6 +80,7 @@ def get_peptides_and_protein_df(results):
     df['clean_sequence'] = df['sequence'].apply(lambda x: x[2:-2])
     df['unmod_sequence'] = df['clean_sequence'].apply(lambda x: get_unmodified_peptide(x))
     return df
+
 
 def add_protein_groups(df, use_groups):
     seen = {}
